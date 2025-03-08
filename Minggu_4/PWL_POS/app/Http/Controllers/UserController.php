@@ -11,10 +11,16 @@ class UserController extends Controller
 {
     
     public function index(){
-      
+        
+        $user = UserModel::with('level')->get();
+        return view('user',['data'=> $user]);
 
-        $user = UserModel::all();
-        return view('user', ['data' => $user]); // Kirim ke tampilan
+        // $user = UserModel::with('level')->get();
+        // dd($user);
+
+        // $user = UserModel::all();
+        // return view('user', ['data' => $user]); 
+        // // Kirim ke tampilan
      
         
 
@@ -136,4 +142,5 @@ class UserController extends Controller
 
         redirect('/user');
     }
+
 }
