@@ -12,8 +12,10 @@ class UserController extends Controller
     
     public function index(){
       
-        $user = UserModel::where('username','manager9')->firstOrFail();
-        return view('user', ['data' => $user]);
+        $user = UserModel::where('level_id', 2)->count(); // Hitung jumlah user
+        return view('user', ['data' => $user]); // Kirim ke tampilan
+     
+        
 
         // $user = UserModel::firstwhere('level_id',1);
                 // $data = [
@@ -29,6 +31,8 @@ class UserController extends Controller
           // $user = UserModel::findOr(20, ['username','nama'], function(){
         //     abort(404);
         // });
+
+         // $user = UserModel::where('username','manager9')->firstOrFail();
 
         // $user = UserModel::all();
         // return view('user', ['data'=>$user]);
