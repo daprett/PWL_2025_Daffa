@@ -18,7 +18,7 @@ class KategoriSeeder extends Seeder
             ['kategori_kode' => 'ELEC', 'kategori_nama' => 'Elektronik'],
             ['kategori_kode' => 'TOOL', 'kategori_nama' => 'Perkakas'],
             ['kategori_kode' => 'CLOTH', 'kategori_nama' => 'Pakaian'],
-            ['kategori_kode' => 'FURN', 'kategori_nama' => 'Furniture'],
+            ['kategori_kode' => 'FURN', 'kategori_nama' => 'Furniture']
         ];
 
         DB::table('m_kategori')->insert($kategori);
