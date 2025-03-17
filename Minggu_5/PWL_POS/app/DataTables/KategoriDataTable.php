@@ -3,14 +3,10 @@
 namespace App\DataTables;
 
 use App\Models\KategoriModel;
-use Illuminate\Database\Eloquent\Builder as QueryBuilder;
- use Yajra\DataTables\EloquentDataTable;
-use Yajra\DataTables\Html\Builder as HtmlBuilder; 
-use Yajra\DataTables\Html\Button;
+use Illuminate\Database\Eloquent\Builder as QueryBuilder; use Yajra\DataTables\EloquentDataTable;
+use Yajra\DataTables\Html\Builder as HtmlBuilder; use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields; 
-use Yajra\DataTables\Services\DataTable;
+use Yajra\DataTables\Html\Editor\Editor; use Yajra\DataTables\Html\Editor\Fields; use Yajra\DataTables\Services\DataTable;
 
 class KategoriDataTable extends DataTable
 {
@@ -19,12 +15,23 @@ class KategoriDataTable extends DataTable
 *
 *	@param QueryBuilder $query Results from query() method.
 */
-public function dataTable(QueryBuilder $query): EloquentDataTable
-{
-return (new EloquentDataTable($query))
-/*	->addColumn('action', 'kategori.action') */
-->setRowId('id');
-}
+
+
+public function dataTable(QueryBuilder $query): EloquentDataTable 
+{ 
+    return (new EloquentDataTable($query)) 
+    ->addColumn('action', function ($id) {
+        $edit = route('kategori.edit', $id);
+        $delete = route('kategori.delete', $id);
+        return '<div style="display: flex; gap: 5px;">
+            <a href="' . $edit . '" class="btn btn-warning btn-sm">Edit</a>
+            <a href="' . $delete . '" class="btn btn-danger btn-sm btn-delete">Delete</a>
+        </div>';
+    })
+            
+        ->setRowId('id'); 
+} 
+
 
 /**
 *	Get the query source of dataTable.
@@ -58,16 +65,26 @@ return $this->builder()
     /**
     *	Get the dataTable columns definition.
     */
-    public function getColumns(): array
-    {
-    return [
-    /*	Column::computed('action')
-    ->exportable(false)
-    ->printable(false)
-    ->width(60)
-    ->addClass('text-center'), */ Column::make('kategori_id'), Column::make('kategori_kode'), Column::make('kategori_nama'), Column::make('created_at'), Column::make('updated_at'),
-    ];
-    }
+    public function getColumns(): array 
+    { 
+        return [ 
+    /*         Column::computed('action') 
+                  ->exportable(false) 
+                  ->printable(false) 
+                  ->width(60) 
+                  ->addClass('text-center'), */ 
+            Column::make('kategori_id'), 
+            Column::make('kategori_kode'), 
+            Column::make('kategori_nama'), 
+            Column::make('created_at'), 
+            Column::make('updated_at'), 
+            Column::computed('action')
+                -> exportable(false)
+                -> printable(false)
+                -> width(100)
+                -> addClass('text-center')
+        ]; 
+    } 
     
     /**
     *	Get the filename for export.

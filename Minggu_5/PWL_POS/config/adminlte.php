@@ -333,6 +333,7 @@ return [
             'url' => 'admin/settings',
             'icon' => 'fas fa-fw fa-user',
         ],
+        
         [
             'text' => 'change_password',
             'url' => 'admin/settings',
@@ -392,6 +393,13 @@ return [
             'icon_color' => 'cyan',
             'url' => '#',
         ],
+        ['header' => 'Manage Kategori'],
+        [
+            'text' => 'Manage',
+            'url' => 'kategori',
+            'icon' => '	fas fa-folder',
+        ],
+
     ],
 
     /*

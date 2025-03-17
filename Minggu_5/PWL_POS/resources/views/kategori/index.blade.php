@@ -1,20 +1,27 @@
 @extends('layouts.app')
 
+{{-- Customize layout sections --}}
+
 @section('subtitle', 'Kategori')
-@section('content_header_title', 'Home')
-@section('content_header_subtitle', 'kategori')
+
+@section('content_header_title', 'Kategori')
+@section('content_header_subtitle', 'Manage')
+
+{{-- Content Body: Main Page Content --}}
 
 @section('content')
     <div class="container">
         <div class="card">
             <div class="card-header">Manage Kategori</div>
             <div class="card-body">
-                {{$dataTable->table()}}
+                <a href="{{ url('/kategori/create') }}" class="btn btn-success">Add</a>
+                <br><br>
+                {{ $dataTable->table() }}
             </div>
         </div>
     </div>
 @endsection
 
 @push('scripts')
-    {{$dataTable->scripts()}}
+    {{ $dataTable->scripts() }}
 @endpush
