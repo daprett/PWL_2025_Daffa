@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LevelModel extends Model
+class SupplierModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'm_level';
+    protected $table = 'm_supplier';
     protected $fillable = [];
-    protected $primaryKey = 'level_id';
-    protected $guarded = [] ;
+    protected $primaryKey ='supplier_id';
+    protected $guarded = [];
+
 }
