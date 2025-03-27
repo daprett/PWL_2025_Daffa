@@ -6,10 +6,13 @@ use App\Models\LevelModel;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\ViewErrorBag;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Mockery\Matcher\HasKey;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 
+use function Laravel\Prompts\error;
 
 class UserController extends Controller
 {
@@ -33,7 +36,9 @@ class UserController extends Controller
 
     // Ambil data user dalam bentuk json untuk datatables public function list(Request $request)
   // Ambil data user dalam bentuk JSON untuk DataTables
-public function list(Request $request) {
+// Ambil data user dalam bentuk JSON untuk DataTables
+public function list(Request $request)
+{
     $users = UserModel::select('user_id', 'username', 'nama', 'level_id')
         ->with('level');
 
@@ -43,19 +48,27 @@ public function list(Request $request) {
     }
 
     return DataTables::of($users)
-        ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
-        ->addColumn('aksi', function ($user) { // menambahkan kolom aksi
+        ->addIndexColumn() // Menambahkan kolom index / no urut (default nama kolom: DT_RowIndex)
+        ->addColumn('aksi', function ($user) {
+            /* 
             $btn = '<a href="'.url('/user/' . $user->user_id).'" class="btn btn-info btn-sm">Detail</a> ';
             $btn .= '<a href="'.url('/user/' . $user->user_id . '/edit').'" class="btn btn-warning btn-sm">Edit</a> ';
-            $btn .= '<form class="d-inline-block" method="POST" action="'.url('/user/' . $user->user_id).'">';
-            $btn .= csrf_field() . method_field("DELETE");
-            $btn .= '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\')">Hapus</button>';
-            $btn .= '</form>';
+            $btn .= '<form class="d-inline-block" method="POST" action="'. url('/user/'.$user->user_id).'">'
+                . csrf_field() . method_field('DELETE') .
+                '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';
+            */
+
+            $btn  = '<button onclick="modalAction(\''.url('/user/' . $user->user_id . '/show_ajax').'\')" class="btn btn-info btn-sm">Detail</button> ';
+            $btn .= '<button onclick="modalAction(\''.url('/user/' . $user->user_id . '/edit_ajax').'\')" class="btn btn-warning btn-sm">Edit</button> ';
+            $btn .= '<button onclick="modalAction(\''.url('/user/' . $user->user_id . '/delete_ajax').'\')" class="btn btn-danger btn-sm">Hapus</button> ';
+
             return $btn;
         })
-        ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah HTML
+        ->rawColumns(['aksi']) // Memberitahu bahwa kolom aksi adalah HTML
         ->make(true);
 }
+
+
 
     public function create(){
         $breadcrumb = (object)[
@@ -158,6 +171,97 @@ public function list(Request $request) {
             return redirect('/user')->with('error', 'Data user gagal dihapus karena terdapat tabel lain yang masih terkait dengan data ini');
         }
     }
+
+    public function create_ajax(){
+        $level = LevelModel::select('level_id','level_nama')->get();
+
+        return View('user.create_ajax')
+        ->with('level', $level);
+    }
+
+    public function store_ajax(Request $request){
+        //cek req ajax
+        if ($request->ajax()|| $request->wantsJson()) {
+            $rules =[
+                'level_id' => 'required|integer',
+                'username' => 'required|string|min:3|unique:m_user,username',
+                'nama'     => 'required|string|max:100',
+                'password' => 'required|min:6',
+
+            ]; 
+            
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false, //response status
+                    'message' => 'Validasi Gagal', //pesan gagal
+                    'msgField' => $validator->errors(), //pesan error
+                ]);
+            }
+            UserModel::create($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'data user berhasil disimpan'
+            ]);
+        }
+        redirect('/');
+    }
+
+    public function edit_ajax(string $id){
+        $user = UserModel::find($id);
+        $level = LevelModel::select('level_id', 'level_nama')->get();
+
+        return view('user.edit_ajax',['user'=> $user, 'level' => $level]);
+    }
+
+    public function update_ajax(Request $request, $id)
+{
+    // Cek apakah request berasal dari AJAX
+    if ($request->ajax() || $request->wantsJson()) {
+        $rules = [
+            'level_id'  => 'required|integer',
+            'username'  => 'required|max:20|unique:m_user,username,' . $id . ',user_id',
+            'nama'      => 'required|max:100',
+            'password'  => 'nullable|min:6|max:20'
+        ];
+
+        // Validasi input
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'    => false, // Respon JSON, true: berhasil, false: gagal
+                'message'   => 'Validasi gagal.',
+                'msgField'  => $validator->errors() // Menunjukkan field mana yang error
+            ]);
+        }
+
+        // Cek apakah user dengan ID yang diberikan ada
+        $check = UserModel::find($id);
+        if ($check) {
+            // Jika password tidak diisi, hapus dari request
+            if (!$request->filled('password')) {
+                $request->request->remove('password');
+            }
+
+            // Update data user
+            $check->update($request->all());
+
+            return response()->json([
+                'status'  => true,
+                'message' => 'Data berhasil diupdate'
+            ]);
+        } else {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Data tidak ditemukan'
+            ]);
+        }
+    }
+
+    return redirect('/');
+}
     // public function index(){
 
     //     $user = UserModel::with('level')->get();
