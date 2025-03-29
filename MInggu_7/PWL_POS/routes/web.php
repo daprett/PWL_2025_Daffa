@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LevelController;
@@ -35,7 +36,16 @@ use Symfony\Component\Routing\Router;
 // Route::put('/user/ubah_simpan/{id}',[UserController::class,'ubah_simpan']);
 // Route::get('/user/hapus/{id}',[UserController::class,'hapus']);
 
-//Js 5 
+
+
+//Js 7
+Route::pattern('id', '[0-9]+');
+Route::get('login',[AuthController::class, 'login'])->name('login');
+Route::post('login',[AuthController::class, 'postlogin']);
+Route::get('logout',[AuthController::class, 'logout'])->middleware('auth');
+
+Route::middleware(['auth'])->group(function(){
+    //Js 5 
 //Praktikum 2
 Route::get('/',[WelcomeController::class,'index']);
 //Praktikum 3
@@ -122,5 +132,6 @@ Route::group(['prefix'=>'supplier'], function(){
     Route::get('/{id}/delete_ajax',[SupplierController::class,'confirm_ajax']);// menghapus data user 
     Route::delete('/{id}/delete_ajax',[SupplierController::class,'delete_ajax']);// menghapus data user 
     Route::delete('/{id}',[SupplierController::class,'destroy']);// menghapus data user 
+});
 });
 
