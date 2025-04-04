@@ -21,7 +21,7 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="{{asset('adminlte/dist/css/adminlte.min.css')}}">
 </head>
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition dark-mode sidebar-mini">
 <!-- Site wrapper -->
 <div class="wrapper">
   <!-- Navbar -->
