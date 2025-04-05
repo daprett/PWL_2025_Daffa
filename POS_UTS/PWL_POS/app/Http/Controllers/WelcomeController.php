@@ -12,7 +12,7 @@ class WelcomeController extends Controller
     public function index(){
         $breadscrumb = (object)[
             'title' => 'Profil Pengguna',
-            'list'  => ['Home', 'Profil'],
+            'list'  => ['Home', 'Profile'],
         ];
 
         $activeMenu = 'dashboard';
