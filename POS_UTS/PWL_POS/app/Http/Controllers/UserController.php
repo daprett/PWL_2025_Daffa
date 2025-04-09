@@ -58,7 +58,7 @@ public function list(Request $request)
                 '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';
             */
 
-            $btn  = '<button onclick="modalAction(\''.url('/user/' . $user->user_id . '/show_ajax').'\')" class="btn btn-info btn-sm">Detail</button> ';
+            $btn = '<button onclick="modalAction(\''.url('/user/' . $user->user_id).'\')" class="btn btn-info btn-sm">Detail</button> ';
             $btn .= '<button onclick="modalAction(\''.url('/user/' . $user->user_id . '/edit_ajax').'\')" class="btn btn-warning btn-sm">Edit</button> ';
             $btn .= '<button onclick="modalAction(\''.url('/user/' . $user->user_id . '/delete_ajax').'\')" class="btn btn-danger btn-sm">Hapus</button> ';
 
@@ -139,23 +139,33 @@ public function list(Request $request)
         return view('user.edit', ['breadcrumb' => $breadcrumb, 'page' => $page, 'user' => $user, 'level' => $level, 'activeMenu' => $activeMenu]);
     }
 
-    public function update(Request $request, string $id){
+    public function update(Request $request, string $id)
+    {
         $request->validate([
-            'username' => 'required|string|min:3|unique:m_user,username,'.$id.',user_id',
-            'nama'     => 'required|string|max:100',
-            'password' => 'required|min:5',
-            'level_id' => 'required|integer'
+            'username'  => 'required|string|min:3|max:20|unique:m_user,username,' . $id . ',user_id',
+            'nama'      => 'required|string|max:100',
+            'gender'    => 'required|in:L,P',
+            'nohp'      => 'required|string|max:15',
+            'email'     => 'nullable|email|max:100',
+            'password'  => 'nullable|min:5',
+            'level_id'  => 'required|integer|exists:m_level,level_id'
         ]);
-
-        UserModel::find($id)->update([
-            'username' => $request->username,
-            'nama'     => $request->nama,
-            'password' => $request->password ? bcrypt($request->password) : UserModel::find($id)->password,
-            'level_id' => $request->level_id,
+    
+        $user = UserModel::findOrFail($id);
+    
+        $user->update([
+            'username'  => $request->username,
+            'nama'      => $request->nama,
+            'gender'    => $request->gender,
+            'nohp'      => $request->nohp,
+            'email'     => $request->email,
+            'password'  => $request->filled('password') ? bcrypt($request->password) : $user->password,
+            'level_id'  => $request->level_id,
         ]);
-
-        return redirect('/user')->with('success',' Data berhasil diubah');
+    
+        return redirect('/user')->with('success', 'Data berhasil diubah');
     }
+    
 
     public function destroy(string $id){
         $check = UserModel::find($id);
@@ -183,11 +193,13 @@ public function list(Request $request)
         //cek req ajax
         if ($request->ajax()|| $request->wantsJson()) {
             $rules =[
-                'level_id' => 'required|integer',
-                'username' => 'required|string|min:3|unique:m_user,username',
+                'level_id' => 'required|integer|exists:m_level,level_id',
+                'username' => 'required|string|min:3|max:20|unique:m_user,username',
                 'nama'     => 'required|string|max:100',
+                'gender'   => 'required|in:L,P',
+                'nohp'     => 'required|string|max:15',
+                'email'    => 'nullable|email|max:100',
                 'password' => 'required|min:6',
-
             ]; 
             
             $validator = Validator::make($request->all(), $rules);
@@ -219,10 +231,13 @@ public function list(Request $request)
     // Cek apakah request berasal dari AJAX
     if ($request->ajax() || $request->wantsJson()) {
         $rules = [
-            'level_id'  => 'required|integer',
-            'username'  => 'required|max:20|unique:m_user,username,' . $id . ',user_id',
-            'nama'      => 'required|max:100',
-            'password'  => 'nullable|min:6|max:20'
+            'level_id' => 'required|integer|exists:m_level,level_id',
+            'username' => 'required|string|min:3|max:20|unique:m_user,username,' . $id . ',user_id',
+            'nama'     => 'required|string|max:100',
+            'gender'   => 'required|in:L,P',
+            'nohp'     => 'required|string|max:15',
+            'email'    => 'nullable|email|max:100',
+            'password' => 'nullable|min:6',
         ];
 
         // Validasi input

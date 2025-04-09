@@ -20,7 +20,7 @@
             <table class="table table-bordered table-striped table-hover table-sm" id="table_level">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>No</th>
                         <th>SupplierKode</th>
                         <th>SupplierNama</th>
                         <th>Aksi</th>

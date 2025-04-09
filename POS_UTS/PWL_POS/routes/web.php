@@ -38,7 +38,7 @@ use Symfony\Component\Routing\Router;
 
 
 
-//Js 7
+//Js 7  
 Route::pattern('id', '[0-9]+');
 Route::get('login',[AuthController::class, 'login'])->name('login');
 Route::post('login',[AuthController::class, 'postlogin']);
@@ -51,6 +51,7 @@ Route::middleware(['auth'])->group(function(){
     //Js 5 
 //Praktikum 2
 Route::get('/',[WelcomeController::class,'index']);
+
 //Praktikum 3
 
 Route::group(['prefix'=>'user'], function(){

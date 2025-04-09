@@ -16,6 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('level_id')->index();
             $table->String('username', 20)->unique();
             $table->String('nama', 100);
+            $table->enum('gender', ['L', 'P']);
+            $table->String('nohp', 15);
+            $table->String('email');
             $table->String('password');
             $table->timestamps('');
 

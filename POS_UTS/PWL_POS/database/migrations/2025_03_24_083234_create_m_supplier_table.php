@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id('supplier_id');
             $table->String('supplier_kode', 10);
             $table->String('supplier_nama', 100);
+            $table->String('Kota', 100);
+            $table->String('nohp', 15);
+            $table->String('email');
             $table->timestamps();
         });
     }

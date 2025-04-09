@@ -60,17 +60,23 @@ class AuthController extends Controller
 
     public function store_user(Request $request){
         $request->validate([
-            'username' => 'required|string|min:3|unique:m_user,username',
+            'level_id' => 'required|integer|exists:m_level,level_id',
+            'username' => 'required|string|min:3|max:20|unique:m_user,username',
             'nama'     => 'required|string|max:100',
-            'password' => 'required|min:5',
-            'level_id' => 'required|integer',
+            'gender'   => 'required|in:L,P',
+            'nohp'     => 'required|string|max:15',
+            'email'    => 'nullable|email|max:100',
+            'password' => 'required|min:6',
         ]);
 
         UserModel::create([
+            'level_id' => $request->level_id,
             'username' => $request->username,
             'nama'     => $request->nama,
-            'password' => bcrypt($request->password),// enkripsi pass
-            'level_id' => $request->level_id,
+            'gender'   => $request->gender,
+            'nohp'     => $request->nohp,
+            'email'    => $request->email,
+            'password' => bcrypt($request->password),
         ]);
         
         return redirect('/')->with('success ',' Registrasi berhasil');

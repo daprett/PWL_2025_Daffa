@@ -15,7 +15,7 @@
         </div>
     </div>
 @else
-    <form action="{{ url('/user/' . $user->user_id . '/update_ajax') }}" method="POST" id="form- edit">
+    <form action="{{ url('/user/' . $user->user_id . '/update_ajax') }}" method="POST" id="form-edit">
         @csrf @method('PUT')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
@@ -49,6 +49,27 @@
                         <small id="error-nama" class="error-text form-text text-danger"></small>
                     </div>
                     <div class="form-group">
+                        <label>Gender</label>
+                        <select name="gender" id="gender" class="form-control" required>
+                            <option value="">-- Pilih Gender --</option>
+                            <option value="L" {{ $user->gender == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="P" {{ $user->gender == 'P' ? 'selected' : '' }}>Perempuan</option>
+                        </select>
+                        <small id="error-gender" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label>Nomer Hp</label>
+                        <input value="{{ $user->nohp }}" type="text" name="nohp" id="nohp" class="form-control"
+                            required>
+                        <small id="error-nohp" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input value="{{ $user->email }}" type="text" name="email" id="email" class="form-control"
+                            required>
+                        <small id="error-email" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
                         <label>Password</label>
                         <input value="" type="password" name="password" id="password" class="form-control">
                         <small class="form-text text-muted">Abaikan jika tidak ingin ubah
@@ -77,6 +98,20 @@
                     maxlength: 20
                 },
                 nama: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 100
+                },
+                gender: {
+                    required: true,
+                    maxlength: 100
+                },
+                nohp: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 100
+                },
+                email: {
                     required: true,
                     minlength: 3,
                     maxlength: 100

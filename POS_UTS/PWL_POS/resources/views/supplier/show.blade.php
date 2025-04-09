@@ -25,6 +25,18 @@
                         <th>Supplier_nama</th>
                         <td>{{ $supplier->supplier_nama }}</td>
                     </tr>
+                    <tr>
+                        <th>Kota</th>
+                        <td>{{ $supplier->Kota }}</td>
+                    </tr>
+                    <tr>
+                        <th>Nomer HP</th>
+                        <td>{{ $supplier->nohp }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ $supplier->email }}</td>
+                    </tr>
                 </table>
             @endempty
             <a href="{{ url('supplier') }}" class="btn btn-sm btn-default mt-2">Kembali</a>

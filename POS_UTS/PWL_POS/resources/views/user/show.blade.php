@@ -1,4 +1,5 @@
 @extends('layouts.template')
+
 @section('content')
     <div class="card card-outline card-primary">
         <div class="card-header">
@@ -6,7 +7,7 @@
             <div class="card-tools"></div>
         </div>
         <div class="card-body">
-            @empty($user)
+            @if(empty($user))
                 <div class="alert alert-danger alert-dismissible">
                     <h5><i class="icon fas fa-ban"></i> Kesalahan!</h5>
                     Data yang Anda cari tidak ditemukan.
@@ -19,7 +20,7 @@
                     </tr>
                     <tr>
                         <th>Level</th>
-                        <td>{{ $user->level->level_nama }}</td>
+                        <td>{{ $user->level->level_nama ?? '-' }}</td>
                     </tr>
                     <tr>
                         <th>Username</th>
@@ -30,15 +31,25 @@
                         <td>{{ $user->nama }}</td>
                     </tr>
                     <tr>
-                        <th>Password</th>
-                        <td>********</td>
+                        <th>Gender</th>
+                        <td>{{ $user->gender == 'L' ? 'Laki-laki' : ($user->gender == 'P' ? 'Perempuan' : '-') }}</td>
+                    </tr>
+                    <tr>
+                        <th>No HP</th>
+                        <td>{{ $user->nohp }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ $user->email ?? '-' }}</td>
                     </tr>
                 </table>
-            @endempty
+            @endif
+
             <a href="{{ url('user') }}" class="btn btn-sm btn-default mt-2">Kembali</a>
         </div>
     </div>
 @endsection
+
 @push('css')
 @endpush
 

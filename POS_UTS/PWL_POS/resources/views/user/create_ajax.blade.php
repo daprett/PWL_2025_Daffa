@@ -31,6 +31,27 @@
                     <small id="error-nama" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select name="gender" id="gender" class="form-control" required>
+                        <option value="">-- Pilih Gender --</option>
+                        <option value="L">Laki-laki</option>
+                        <option value="P">Perempuan</option>
+                    </select>
+                    <small id="error-gender" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label>Nomer HP</label>
+                    <input value="" type="text" name="nohp" id="nohp" class="form-control"
+                        required>
+                    <small id="error-nohp" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input value="" type="text" name="email" id="email" class="form-control"
+                        required>
+                    <small id="error-email" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
                     <label>Password</label>
                     <input value="" type="password" name="password" id="password" class="form-control"
                         required>
@@ -58,6 +79,20 @@
                     maxlength: 20
                 },
                 nama: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 100
+                },
+                gender: {
+                    required: true,
+                    maxlength: 100
+                },
+                nohp: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 100
+                },
+                email: {
                     required: true,
                     minlength: 3,
                     maxlength: 100

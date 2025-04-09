@@ -20,6 +20,24 @@
                         required>
                     <small id="error-supplier_nama" class="error-text form-text text-danger"></small>
                 </div>
+                <div class="form-group">
+                    <label>Kota</label>
+                    <input value="" type="text" name="kota" id="kota" class="form-control"
+                        required>
+                    <small id="error-kota" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label>nohp</label>
+                    <input value="" type="text" name="nohp" id="nohp" class="form-control"
+                        required>
+                    <small id="error-nohp" class="error-text form-text text-danger"></small>
+                </div>
+                <div class="form-group">
+                    <label>email</label>
+                    <input value="" type="text" name="email" id="email" class="form-control"
+                        required>
+                    <small id="error-email" class="error-text form-text text-danger"></small>
+                </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan</button>
@@ -37,6 +55,21 @@
                     maxlength: 20
                 },
                 supplier_nama: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 100
+                },
+                kota: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 100
+                },
+                nohp: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 100
+                },
+                email: {
                     required: true,
                     minlength: 3,
                     maxlength: 100

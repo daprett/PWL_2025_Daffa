@@ -46,6 +46,26 @@
                         <small id="error-nama" class="error-text form-text text-danger"></small>
                     </div>
                     <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select name="gender" id="gender" class="form-control" required>
+                            <option value="">-- Pilih Gender --</option>
+                            <option value="L">Laki-laki</option>
+                            <option value="P">Perempuan</option>
+                        </select>
+                        <small id="error-gender" class="error-text form-text text-danger"></small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Nomer Hp</label>
+                        <input type="text" name="nohp" id="nohp" class="form-control" required maxlength="100" placeholder="Masukkan nohp">
+                        <small id="error-nohp" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" name="email" id="email" class="form-control" required maxlength="100" placeholder="Masukkan email">
+                        <small id="error-email" class="error-text form-text text-danger"></small>
+                    </div>
+                    <div class="form-group">
                         <label>Password</label>
                         <input type="password" name="password" id="password" class="form-control" required minlength="5"
                             maxlength="20" placeholder="Masukkan Password">

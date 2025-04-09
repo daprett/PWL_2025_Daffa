@@ -39,7 +39,7 @@ class SupplierController extends Controller
                 // $btn .= '</form>';
                 // return $btn;
 
-                $btn  = '<button onclick="modalAction(\''.url('/supplier/' . $supplier->supplier_id . '/show_ajax').'\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn  = '<button onclick="modalAction(\''.url('/supplier/' . $supplier->supplier_id . '/').'\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\''.url('/supplier/' . $supplier->supplier_id . '/edit_ajax').'\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\''.url('/supplier/' . $supplier->supplier_id . '/delete_ajax').'\')" class="btn btn-danger btn-sm">Hapus</button> ';
     
@@ -145,8 +145,11 @@ class SupplierController extends Controller
         //cek req ajax
         if ($request->ajax()|| $request->wantsJson()) {
             $rules =[
-                'supplier_kode' => 'required|string|unique:m_supplier,supplier_kode',
-                'supplier_nama' => 'required|string',
+                'supplier_kode' => 'required|string|max:10|unique:m_supplier,supplier_kode',
+                'supplier_nama' => 'required|string|max:100',
+                'kota'          => 'required|string|max:100',
+                'nohp'          => 'required|string|max:15',
+                'email'         => 'required|email|max:255',
             ]; 
             
             $validator = Validator::make($request->all(), $rules);
@@ -176,8 +179,11 @@ class SupplierController extends Controller
     // Cek apakah request berasal dari AJAX
     if ($request->ajax() || $request->wantsJson()) {
         $rules = [
-            'supplier_kode' => 'required|string|unique:m_supplier,supplier_kode,'.$id.',supplier_id',
-            'supplier_nama' => 'required|string',
+            'supplier_kode' => 'required|string|max:10|unique:m_supplier,supplier_kode,' . $id . ',supplier_id',
+            'supplier_nama' => 'required|string|max:100',
+            'kota'          => 'required|string|max:100',
+            'nohp'          => 'required|string|max:15',
+            'email'         => 'required|email|max:255',
         ];
 
         // Validasi input
