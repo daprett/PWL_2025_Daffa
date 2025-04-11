@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LevelModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
@@ -40,7 +41,7 @@ class LevelController extends Controller
                 // $btn .= '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\')">Hapus</button>';
                 // $btn .= '</form>';
                 // return $btn;
-                $btn  = '<button onclick="modalAction(\''.url('/level/' . $level->level_id . '/show_ajax').'\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn  = '<button onclick="modalAction(\''.url('/level/' . $level->level_id . '/').'\')" class="btn btn-info btn-sm">Detail</button> ';
                 $btn .= '<button onclick="modalAction(\''.url('/level/' . $level->level_id . '/edit_ajax').'\')" class="btn btn-warning btn-sm">Edit</button> ';
                 $btn .= '<button onclick="modalAction(\''.url('/level/' . $level->level_id . '/delete_ajax').'\')" class="btn btn-danger btn-sm">Hapus</button> ';
     
@@ -80,7 +81,7 @@ class LevelController extends Controller
     }
 
     public function show(string $id){
-        $user = LevelModel::find($id);
+        $level = LevelModel::find($id);
 
         $breadcrumb = (object)[
             'title' => 'Detail Level',
@@ -91,9 +92,9 @@ class LevelController extends Controller
             'title' => 'Detail level'
         ];
 
-        $activeMenu = 'user';
+        $activeMenu = 'level';
 
-        return view('level.show',['user' => $user, 'breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('level.show',['level' => $level, 'breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
 
     public function edit(string $id){
@@ -239,6 +240,20 @@ class LevelController extends Controller
                 ]);
             }
         }
+    }
+
+    
+    public function export_pdf(){
+        $level = LevelModel::select('level_id', 'level_kode', 'level_nama')
+                    ->orderBy('level_id')
+                    ->get();
+
+        $pdf = Pdf::loadView('level.export_pdf', ['level' => $level]);
+        $pdf->setPaper('a4','portrait');
+        $pdf->setOption("isRemoteEnable", true);
+        $pdf->render();
+
+        return $pdf->stream('Data Level'.date('Y-m-d H:i:s').'.pdf');
     }
     // public function index(){
     //     // DB::insert('insert into m_level(level_kode, level_nama, created_at) values(?,?,?)', ['CUS', 'Pelanggan', now()]);

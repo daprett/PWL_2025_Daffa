@@ -69,9 +69,11 @@ Route::group(['prefix'=>'user'], function(){
     Route::get('/{id}/delete_ajax',[UserController::class, 'confirm_ajax']); // untuk tampilan form confirm delete ajax js 6
     Route::delete('/{id}/delete_ajax',[UserController::class, 'delete_ajax']); // untuk hapus data ajax js 6
     Route::delete('/{id}',[UserController::class,'destroy']);// menghapus data user 
+    Route::get('/export_pdf', [UserController::class, 'export_pdf']); 
+
 });
 
-Route::middleware(['authorize:ADM'])->prefix('level')->group(function () {
+Route::middleware(['authorize:ADM,MNG'])->prefix('level')->group(function () {
     Route::get('/',[LevelController::class,'index']);//menampilkan halaman awal
     Route::post('/list',[LevelController::class,'list']);//menampilkan data user bentuk json / datatables
     Route::get('/create',[LevelController::class,'create']);// meanmpilkan bentuk form untuk tambah user
@@ -86,6 +88,8 @@ Route::middleware(['authorize:ADM'])->prefix('level')->group(function () {
     Route::get('/{id}/delete_ajax',[LevelController::class,'confirm_ajax']);// menghapus data user ajax js 6
     Route::delete('/{id}/delete_ajax',[LevelController::class,'delete_ajax']);// menghapus data user ajax js 6
     Route::delete('/{id}',[LevelController::class,'destroy']);// menghapus data user 
+    Route::get('/export_pdf', [LevelController::class, 'export_pdf']);
+
 });
 
 Route::middleware(['authorize:ADM,MNG'])->prefix('kategori')->group(function () {
@@ -103,6 +107,8 @@ Route::middleware(['authorize:ADM,MNG'])->prefix('kategori')->group(function () 
     Route::get('/{id}/delete_ajax',[KategoriController::class,'confirm_ajax']);// menghapus data user ajax js 6 
     Route::delete('/{id}/delete_ajax',[KategoriController::class,'delete_ajax']);// menghapus data user ajax js 6 
     Route::delete('/{id}',[KategoriController::class,'destroy']);// menghapus data user 
+    Route::get('/export_pdf', [KategoriController::class, 'export_pdf']);
+
 });
 
 
@@ -121,6 +127,10 @@ Route::middleware(['authorize:ADM,MNG'])->prefix('barang')->group(function () {
     Route::get('/{id}/delete_ajax',[BarangController::class,'confirm_ajax']);// menghapus data user ajax js 6 
     Route::delete('/{id}/delete_ajax',[BarangController::class,'delete_ajax']);// menghapus data user ajax js 6 
     Route::delete('/{id}',[BarangController::class,'destroy']);// menghapus data user 
+    Route::get('/import',[BarangController::class, 'import']);
+    Route::post('/import_ajax',[BarangController::class, 'import_ajax']);
+    Route::get('/export_pdf', [BarangController::class, 'export_pdf']);
+
 });
 
 Route::middleware(['authorize:MNG'])->prefix('supplier')->group(function () {
@@ -138,6 +148,7 @@ Route::middleware(['authorize:MNG'])->prefix('supplier')->group(function () {
     Route::get('/{id}/delete_ajax',[SupplierController::class,'confirm_ajax']);// menghapus data user 
     Route::delete('/{id}/delete_ajax',[SupplierController::class,'delete_ajax']);// menghapus data user 
     Route::delete('/{id}',[SupplierController::class,'destroy']);// menghapus data user 
+    Route::get('/export_pdf', [SupplierController::class, 'export_pdf']);
 });
 });
 

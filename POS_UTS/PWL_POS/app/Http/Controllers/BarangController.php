@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\BarangModel;
 use App\Models\KategoriModel;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class BarangController extends Controller
 {
@@ -42,7 +44,7 @@ class BarangController extends Controller
                     // $btn .= '</form>';
                     // return $btn;
 
-                    $btn  = '<button onclick="modalAction(\''.url('/barang/' . $barang->barang_id . '/show_ajax').'\')" class="btn btn-info btn-sm">Detail</button> ';
+                    $btn  = '<button onclick="modalAction(\''.url('/barang/' . $barang->barang_id . '/').'\')" class="btn btn-info btn-sm">Detail</button> ';
                     $btn .= '<button onclick="modalAction(\''.url('/barang/' . $barang->barang_id . '/edit_ajax').'\')" class="btn btn-warning btn-sm">Edit</button> ';
                     $btn .= '<button onclick="modalAction(\''.url('/barang/' . $barang->barang_id . '/delete_ajax').'\')" class="btn btn-danger btn-sm">Hapus</button> ';
         
@@ -264,5 +266,84 @@ class BarangController extends Controller
                 ]);
             }
         }
+    }
+
+    public function import()
+    {
+        return view('barang.import');
+    }
+    
+    public function import_ajax(Request $request)
+    {
+        if($request->ajax() || $request->wantsJson()){
+            $rules = [
+                // validasi file harus xls atau xlsx, max 1MB 
+                'file_barang' => ['required', 'mimes:xlsx', 'max:1024']
+            ];
+
+            $validator = Validator::make($request->all(), $rules); 
+            if($validator->fails()){
+                return response()->json([ 
+                    'status' => false,
+                    'message' => 'Validasi Gagal', 
+                    'msgField' => $validator->errors()
+                ]);
+            }
+            $file = $request->file('file_barang');                  // ambil file dari request
+
+            $reader = IOFactory::createReader('Xlsx');              // load reader file excel
+            $reader->setReadDataOnly(true);	                        // hanya membaca data
+            $spreadsheet = $reader->load($file->getRealPath());     // load file excel
+            $sheet = $spreadsheet->getActiveSheet();	            // ambil sheet yang aktif
+
+            $data = $sheet->toArray(null, false, true, true);	    // ambil data excel
+
+            $insert = [];
+            if(count($data) > 1){                                   // jika data lebih dari 1 baris 
+                foreach ($data as $baris => $value) {
+                    if($baris > 1){                                 // baris ke 1 adalah header, maka lewati
+                        $insert[] = [
+                            'kategori_id' => $value['A'], 
+                            'barang_kode' => $value['B'], 
+                            'barang_nama' => $value['C'], 
+                            'harga_beli'  => $value['D'], 
+                            'harga_jual'  => $value['E'], 
+                            'created_at'  => now(),
+                        ];
+                    }
+                }
+
+                if(count($insert) > 0){
+                    // insert data ke database, jika data sudah ada, maka diabaikan 
+                    BarangModel::insertOrIgnore($insert);
+                }
+
+                return response()->json([ 
+                    'status' => true,
+                    'message' => 'Data berhasil diimport'
+                ]);
+            }else{
+                return response()->json([ 
+                    'status' => false,
+                    'message' => 'Tidak ada data yang diimport'
+                ]);
+            }
+        }
+        return redirect('/');
+    }
+
+    public function export_pdf(){
+        $barang = BarangModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
+                    ->orderBy('kategori_id')
+                    ->orderBy('barang_kode')
+                    ->with('kategori')
+                    ->get();
+
+        $pdf = Pdf::loadView('barang.export_pdf', ['barang' => $barang]);
+        $pdf->setPaper('a4','portrait');
+        $pdf->setOption("isRemoteEnable", true);
+        $pdf->render();
+
+        return $pdf->stream('Data Barang'.date('Y-m-d H:i:s').'.pdf');
     }
 }
