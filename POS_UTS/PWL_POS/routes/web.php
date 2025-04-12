@@ -51,10 +51,12 @@ Route::middleware(['auth'])->group(function(){
     //Js 5 
 //Praktikum 2
 Route::get('/',[WelcomeController::class,'index']);
+Route::post('/update-photo', [UserController::class, 'update_photo']);          // upload foto
+Route::post('/delete-photo', [UserController::class, 'delete_photo']);
 
 //Praktikum 3
 
-Route::group(['prefix'=>'user'], function(){
+Route::middleware(['authorize:ADM,MNG'])->prefix('user')->group(function (){
     Route::get('/',[UserController::class,'index']);//menampilkan halaman awal
     Route::post('/list',[UserController::class,'list']);//menampilkan data user bentuk json / datatables
     Route::get('/create',[UserController::class,'create']);// meanmpilkan bentuk form untuk tambah user
@@ -70,10 +72,9 @@ Route::group(['prefix'=>'user'], function(){
     Route::delete('/{id}/delete_ajax',[UserController::class, 'delete_ajax']); // untuk hapus data ajax js 6
     Route::delete('/{id}',[UserController::class,'destroy']);// menghapus data user 
     Route::get('/export_pdf', [UserController::class, 'export_pdf']); 
-
 });
 
-Route::middleware(['authorize:ADM,MNG'])->prefix('level')->group(function () {
+Route::middleware(['authorize:ADM'])->prefix('level')->group(function () {
     Route::get('/',[LevelController::class,'index']);//menampilkan halaman awal
     Route::post('/list',[LevelController::class,'list']);//menampilkan data user bentuk json / datatables
     Route::get('/create',[LevelController::class,'create']);// meanmpilkan bentuk form untuk tambah user
@@ -92,7 +93,7 @@ Route::middleware(['authorize:ADM,MNG'])->prefix('level')->group(function () {
 
 });
 
-Route::middleware(['authorize:ADM,MNG'])->prefix('kategori')->group(function () {
+Route::middleware(['authorize:ADM'])->prefix('kategori')->group(function () {
     Route::get('/',[KategoriController::class,'index']);//menampilkan halaman awal
     Route::post('/list',[KategoriController::class,'list']);//menampilkan data user bentuk json / datatables
     Route::get('/create',[KategoriController::class,'create']);// meanmpilkan bentuk form untuk tambah user
@@ -112,7 +113,7 @@ Route::middleware(['authorize:ADM,MNG'])->prefix('kategori')->group(function () 
 });
 
 
-Route::middleware(['authorize:ADM,MNG'])->prefix('barang')->group(function () {
+Route::middleware(['authorize:ADM,MNG,CUS'])->prefix('barang')->group(function () {
     Route::get('/',[BarangController::class,'index']);//menampilkan halaman awal
     Route::post('/list',[BarangController::class,'list']);//menampilkan data user bentuk json / datatables
     Route::get('/create',[BarangController::class,'create']);// meanmpilkan bentuk form untuk tambah user
@@ -133,7 +134,7 @@ Route::middleware(['authorize:ADM,MNG'])->prefix('barang')->group(function () {
 
 });
 
-Route::middleware(['authorize:MNG'])->prefix('supplier')->group(function () {
+Route::middleware(['authorize:MNG,ADM'])->prefix('supplier')->group(function () {
     Route::get('/',[SupplierController::class,'index']);//menampilkan halaman awal
     Route::post('/list',[SupplierController::class,'list']);//menampilkan data user bentuk json / datatables
     Route::get('/create',[SupplierController::class,'create']);// meanmpilkan bentuk form untuk tambah user
