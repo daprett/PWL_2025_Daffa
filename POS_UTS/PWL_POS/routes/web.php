@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserLogController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\Routing\Router;
@@ -151,5 +153,7 @@ Route::middleware(['authorize:MNG,ADM'])->prefix('supplier')->group(function () 
     Route::delete('/{id}',[SupplierController::class,'destroy']);// menghapus data user 
     Route::get('/export_pdf', [SupplierController::class, 'export_pdf']);
 });
+
+Route::middleware(['authorize:MNG,ADM'])->get('/history', [UserLogController::class,'index']);
 });
 

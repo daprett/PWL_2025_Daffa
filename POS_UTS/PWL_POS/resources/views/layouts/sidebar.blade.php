@@ -74,6 +74,13 @@
       <i class="nav-icon fas fa-cash-register"></i>
       <p>Transaksi Penjualan</p>
       </a>
+      <li class="nav-header">Histori</li>
+      <li class="nav-item">
+        <a href="{{ url('/history') }}" class="nav-link {{ ($activeMenu == 'userlog') ? 'active' : '' }}">
+          <i class="nav-icon fas fa-history"></i>
+          <p>History UserLog</p>
+        </a>
+      </li>      
       </li>
       </ul>
       </nav>
