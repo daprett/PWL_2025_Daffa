@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-    
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login Pengguna</title>
   <meta name="csrf-token" content="{{ csrf_token() }}">
+
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
@@ -16,16 +16,63 @@
   <link rel="stylesheet" href="{{ asset('adminlte/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('adminlte/dist/css/adminlte.min.css') }}">
+
+  <style>
+    body {
+      background-color: #121212 !important;
+      color: #ffffff;
+    }
+    .card {
+      background-color: #1e1e2f;
+      border: 1px solid #3c3c3c;
+    }
+    .form-control {
+      background-color: #2a2a40;
+      color: #fff;
+      border-color: #444;
+    }
+    .form-control::placeholder {
+      color: #aaa;
+    }
+    .form-control:focus {
+      background-color: #2a2a40;
+      color: #fff;
+      border-color: #666;
+      box-shadow: none;
+    }
+    .input-group-text {
+      background-color: #2a2a40;
+      border-color: #444;
+      color: #fff;
+    }
+    .btn-primary {
+      background-color: #3f51b5;
+      border-color: #3f51b5;
+    }
+    .btn-primary:hover {
+      background-color: #5c6bc0;
+      border-color: #5c6bc0;
+    }
+    .text-danger {
+      color: #ff6b6b !important;
+    }
+    a {
+      color: #90caf9;
+    }
+    a:hover {
+      color: #64b5f6;
+    }
+  </style>
 </head>
 
 <body class="hold-transition login-page">
 <div class="login-box">
-  <div class="card card-outline card-primary">
+  <div class="card card-outline card-warning">
     <div class="card-header text-center">
-      <a href="{{ url('/') }}" class="h1"><b>Admin</b>LTE</a>
+      <a href="{{ url('/') }}" class="h1 text-white"><b>Admin</b>LTE</a>
     </div>
     <div class="card-body">
-      <p class="login-box-msg">Sign in to start your session</p>
+      <p class="login-box-msg text-white">Sign in to start your session</p>
 
       <form action="{{ url('login') }}" method="post" id="form-login">
         @csrf
@@ -55,9 +102,9 @@
             </div>
           </div>
           <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            <button type="submit" class="btn btn-warning btn-block">Sign In</button>
           </div>         
-          <a href="/register">Register</a>
+          <a href="/register" class="mt-3">Register</a>
         </div>        
       </form>
     </div>
@@ -97,13 +144,13 @@
                     maxlength: 20
                 }
             },
-            submitHandler: function(form) { 
+            submitHandler: function(form) {
                 $.ajax({
                     url: form.action,
                     type: form.method,
                     data: $(form).serialize(),
                     success: function(response) {
-                        if (response.status) { 
+                        if (response.status) {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Berhasil',
@@ -111,7 +158,7 @@
                             }).then(function() {
                                 window.location = response.redirect;
                             });
-                        } else { 
+                        } else {
                             $('.error-text').text('');
                             $.each(response.msgField, function(prefix, val) {
                                 $('#error-' + prefix).text(val[0]);
@@ -124,17 +171,17 @@
                         }
                     }
                 });
-                return false; 
+                return false;
             },
             errorElement: 'span',
             errorPlacement: function(error, element) {
                 error.addClass('invalid-feedback');
                 element.closest('.input-group').append(error);
             },
-            highlight: function(element, errorClass, validClass) {
+            highlight: function(element) {
                 $(element).addClass('is-invalid');
             },
-            unhighlight: function(element, errorClass, validClass) {
+            unhighlight: function(element) {
                 $(element).removeClass('is-invalid');
             }
         });

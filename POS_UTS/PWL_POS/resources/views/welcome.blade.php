@@ -4,7 +4,7 @@
 
 <!-- Kartu Profil dan Selamat Datang -->
 <div class="card shadow-lg border-0 rounded-lg mt-4">
-    <div class="card-header bg-primary text-white text-center">
+    <div class="card-header bg-warning text-white text-center">
         <h3 class="card-title">
             <i class="fas fa-user-circle"></i> Selamat Datang, {{ $user->username }}!
         </h3>
@@ -33,7 +33,7 @@
                 @if(Auth::user()->photo_profile)
                     <form action="{{ url('/delete-photo') }}" method="POST" class="mb-2">
                         @csrf
-                        <button type="submit" class="btn btn-outline-danger w-100">Delete Photo</button>
+                        <button type="submit" class="btn btn-danger w-100">Delete Photo</button>
                     </form>
                 @endif
 
