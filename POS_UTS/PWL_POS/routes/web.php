@@ -5,6 +5,7 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LevelController;
+use App\Http\Controllers\StokController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserLogController;
@@ -152,6 +153,24 @@ Route::middleware(['authorize:MNG,ADM'])->prefix('supplier')->group(function () 
     Route::delete('/{id}/delete_ajax',[SupplierController::class,'delete_ajax']);// menghapus data user 
     Route::delete('/{id}',[SupplierController::class,'destroy']);// menghapus data user 
     Route::get('/export_pdf', [SupplierController::class, 'export_pdf']);
+});
+
+Route::middleware(['authorize:MNG,ADM'])->prefix('stok')->group(function () {
+    Route::get('/',[StokController::class,'index']);//menampilkan halaman awal
+    Route::post('/list',[StokController::class,'list']);//menampilkan data user bentuk json / datatables
+    Route::get('/create',[StokController::class,'create']);// meanmpilkan bentuk form untuk tambah user
+    Route::post('/',[StokController::class,'store']);//menyimpan user data baru 
+    Route::get('/create_ajax',[StokController::class,'create_ajax']);// meanmpilkan bentuk form untuk tambah user
+    Route::post('/ajax',[StokController::class,'store_ajax']);//menyimpan user data baru 
+    Route::get('/{id}',[StokController::class,'show']); // menampilkan detil user
+    Route::get('/{id}/edit',[StokController::class,'edit']);// menampilkan halaman form edit user
+    Route::put('/{id}',[StokController::class,'update']);// menyimpan perubahan data user 
+    Route::get('/{id}/edit_ajax',[StokController::class,'edit_ajax']);// menampilkan halaman form edit user
+    Route::put('/{id}/update_ajax',[StokController::class,'update_ajax']);// menyimpan perubahan data user 
+    Route::get('/{id}/delete_ajax',[StokController::class,'confirm_ajax']);// menghapus data user 
+    Route::delete('/{id}/delete_ajax',[StokController::class,'delete_ajax']);// menghapus data user 
+    Route::delete('/{id}',[StokController::class,'destroy']);// menghapus data user 
+    Route::get('/export_pdf', [StokController::class, 'export_pdf']);
 });
 
 Route::middleware(['authorize:MNG,ADM'])->get('/history', [UserLogController::class,'index']);
