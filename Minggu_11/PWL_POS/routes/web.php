@@ -4,7 +4,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LevelController;
+use App\Http\Controllers\StokController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
@@ -161,6 +163,66 @@ Route::middleware(['authorize:MNG,ADM'])->prefix('supplier')->group(function () 
     Route::post('/import_ajax',[SupplierController::class,'import_ajax']); // ajax form import excel 
     Route::get('/export_excel',[SupplierController::class,'export_excel']); // export excel
     Route::get('/export_pdf',[SupplierController::class, 'export_pdf']);// export pdf
+});
+
+Route::middleware(['authorize:ADM,MNG,STF'])->prefix('stok')->group(function () {
+    Route::get('/', [StokController::class, 'index'])->name('stok.index');
+    Route::post('/list', [StokController::class, 'getStok'])->name('stok.list');
+    Route::get('/create_ajax', [StokController::class, 'create_ajax']);
+    Route::post('/ajax', [StokController::class, 'store_ajax']);
+    Route::get('/{id}/show_ajax', [StokController::class, 'show_ajax']);
+    Route::get('/{id}/edit_ajax', [StokController::class, 'edit_ajax']);
+    Route::put('/{id}/update_ajax', [StokController::class, 'update_ajax']);
+    Route::get('/{id}/delete_ajax', [StokController::class, 'confirm_ajax']);
+    Route::delete('/{id}/delete_ajax', [StokController::class, 'delete_ajax']);
+    Route::get('/import', [StokController::class, 'import']);
+    Route::post('/import_ajax', [StokController::class, 'import_ajax']);
+    Route::get('/export_excel', [StokController::class, 'export_excel']);
+    Route::get('/export_pdf', [StokController::class, 'export_pdf']);
+});
+
+Route::middleware(['authorize:ADM,MNG,STF'])->prefix('transaksi')->group(function () {
+    Route::get('/', [TransaksiController::class, 'index']); // Menampilkan halaman awal transaksi
+    Route::post('/list', [TransaksiController::class, 'getPenjualan'])->name('transaksi.list'); // Menampilkan data transaksi dalam bentuk JSON untuk DataTables
+    Route::get('/create_ajax', [TransaksiController::class, 'create_ajax']); // Menampilkan halaman form tambah transaksi (Ajax)
+    Route::post('/ajax', [TransaksiController::class, 'store_ajax']); // Menyimpan data transaksi baru (Ajax)
+    Route::get('/{id}/show_ajax', [TransaksiController::class, 'show_ajax']); // Menampilkan detail transaksi (Ajax)
+    Route::get('/{id}/edit_ajax', [TransaksiController::class, 'edit_ajax']); // Menampilkan form edit transaksi (Ajax)
+    Route::put('/{id}/update_ajax', [TransaksiController::class, 'update_ajax']); // Menyimpan perubahan data transaksi (Ajax)
+    Route::get('/{id}/delete_ajax', [TransaksiController::class, 'confirm_ajax']); // Tampilkan konfirmasi hapus transaksi (Ajax)
+    Route::delete('/{id}/delete_ajax', [TransaksiController::class, 'delete_ajax']); // Hapus data transaksi (Ajax)
+    Route::get('/import', [TransaksiController::class, 'import']); // Form impor transaksi
+    Route::post('/import_ajax', [TransaksiController::class, 'import_ajax']); // Proses impor transaksi
+    Route::get('/export_excel', [TransaksiController::class, 'export_excel']); // Ekspor transaksi ke Excel
+    Route::get('/export_pdf', [TransaksiController::class, 'export_pdf']); // Ekspor transaksi ke PDF
+});
+
+Route::middleware(['authorize:ADM,MNG'])->group(function () {
+    Route::group(['prefix' => 'stok'], function () {
+        Route::get('/create_ajax', [StokController::class, 'create_ajax']);
+        Route::post('/ajax', [StokController::class, 'store_ajax']);
+        Route::get('/{id}/edit_ajax', [StokController::class, 'edit_ajax']);
+        Route::put('/{id}/update_ajax', [StokController::class, 'update_ajax']);
+        Route::get('/{id}/delete_ajax', [StokController::class, 'confirm_ajax']);
+        Route::delete('/{id}/delete_ajax', [StokController::class, 'delete_ajax']);
+        Route::get('/export_excel', [StokController::class, 'export_excel']);
+        Route::get('/export_pdf', [StokController::class, 'export_pdf']);
+    });
+});
+
+// Route untuk semua role (ADM, MNG, STF) - Hanya View
+Route::middleware(['authorize:ADM,MNG,STF'])->group(function () {
+    Route::group(['prefix' => 'transaksi'], function () {
+        Route::get('/', [TransaksiController::class, 'index'])->name('penjualan.index'); // Beri nama
+        Route::post('/list', [TransaksiController::class, 'list'])->name('penjualan.list'); // <-- INI YANG DITAMBAH
+        Route::get('/{id}', [TransaksiController::class, 'show'])->name('penjualan.show');
+        Route::get('/create_ajax', [TransaksiController::class, 'create_ajax'])->name('penjualan.create_ajax');
+        Route::post('/ajax', [TransaksiController::class, 'store_ajax'])->name('penjualan.store_ajax');
+        Route::get('/{id}/edit_ajax', [TransaksiController::class, 'edit_ajax'])->name('penjualan.edit_ajax');
+        Route::put('/{id}/update_ajax', [TransaksiController::class, 'update_ajax'])->name('penjualan.update_ajax');
+        Route::get('/{id}/delete_ajax', [TransaksiController::class, 'confirm_ajax'])->name('penjualan.confirm_ajax');
+        Route::delete('/{id}/delete_ajax', [TransaksiController::class, 'delete_ajax'])->name('penjualan.delete_ajax');
+    });
 });
 });
 
