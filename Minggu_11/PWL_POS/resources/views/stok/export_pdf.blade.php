@@ -101,9 +101,11 @@
                 <td class="text-center">{{ $loop->iteration }}</td>
                 <td>{{ $s->barang->barang_kode ?? '-' }}</td>
                 <td>{{ $s->barang->barang_nama ?? '-' }}</td>
-                <td class="text-center">{{ number_format($s->stok_jumlah, 0, ',', '.') }}</td>
+                <td class="text-center">{{ number_format($s->stok_jumlah ?? 0, 0, ',', '.') }}</td>
                 <td>{{ $s->user->nama ?? 'System' }}</td>
-                <td class="text-center">{{ $s->updated_at->format('d-m-Y H:i') }}</td>
+                <td class="text-center">
+                    {{ $s->updated_at ? $s->updated_at->format('d-m-Y H:i') : '-' }}
+                </td>
             </tr>
             @endforeach
         </tbody>

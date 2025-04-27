@@ -55,18 +55,17 @@ class StokController extends Controller
                 ->addColumn('barang_kode', fn($s) => $s->barang->barang_kode ?? '-')
                 ->addColumn('barang_nama', fn($s) => $s->barang->barang_nama ?? '-')
                 ->addColumn('nama', fn($s) => $s->user->nama ?? 'System')
-                ->addColumn('updated_at', function($s) {
+                ->addColumn('updated_at', function ($s) {
                     return $s->updated_at ? $s->updated_at->toISOString() : null;
                 })
-                ->addColumn('aksi', function($s) {
-                    return '<div class="text-center">'.
-                        '<button onclick="modalAction(\''.url('/stok/'.$s->stok_id.'/edit_ajax').'\')" class="btn btn-sm btn-warning mr-1">Edit</button>'.
-                        '<button onclick="modalAction(\''.url('/stok/'.$s->stok_id.'/delete_ajax').'\')" class="btn btn-sm btn-danger">Hapus</button>'.
+                ->addColumn('aksi', function ($s) {
+                    return '<div class="text-center">' .
+                        '<button onclick="modalAction(\'' . url('/stok/' . $s->stok_id . '/edit_ajax') . '\')" class="btn btn-sm btn-warning mr-1">Edit</button>' .
+                        '<button onclick="modalAction(\'' . url('/stok/' . $s->stok_id . '/delete_ajax') . '\')" class="btn btn-sm btn-danger">Hapus</button>' .
                         '</div>';
                 })
                 ->rawColumns(['aksi'])
                 ->toJson();
-
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -76,7 +75,7 @@ class StokController extends Controller
     public function create_ajax()
     {
         // Ambil barang yang belum ada di tabel stok
-        $barang = BarangModel::whereNotIn('barang_id', function($query) {
+        $barang = BarangModel::whereNotIn('barang_id', function ($query) {
             $query->select('barang_id')->from('t_stok');
         })->select('barang_id', 'barang_nama')->get();
 
@@ -86,10 +85,19 @@ class StokController extends Controller
     // Menyimpan data stok baru dengan AJAX
     public function store_ajax(Request $request)
     {
+        // Cek autentikasi user
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User tidak terautentikasi'
+            ], 401);
+        }
+
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
                 'barang_id' => 'required|integer|exists:m_barang,barang_id',
-                'stok_jumlah' => 'required|integer|min:1' // Ubah min ke 1
+                'stok_jumlah' => 'required|integer|min:1'
             ];
 
             $messages = [
@@ -103,23 +111,21 @@ class StokController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Validasi gagal',
-                    'msgField' => $validator->errors() // Sesuaikan dengan key yang dipakai di view
+                    'msgField' => $validator->errors()
                 ], 422);
             }
 
             try {
                 StokModel::create([
                     'barang_id' => $request->barang_id,
-                    'user_id' => auth()->user()->user_id,
+                    'user_id' => $user->user_id, // Gunakan variabel $user di sini
                     'stok_jumlah' => $request->stok_jumlah
-                    // created_at dan updated_at akan terisi otomatis
                 ]);
 
                 return response()->json([
                     'status' => true,
                     'message' => 'Stok berhasil ditambahkan'
                 ]);
-
             } catch (\Exception $e) {
                 return response()->json([
                     'status' => false,
@@ -127,8 +133,10 @@ class StokController extends Controller
                 ], 500);
             }
         }
+
         return redirect('/');
     }
+
 
     // Menampilkan form edit dengan AJAX
     public function edit_ajax($id)
@@ -136,7 +144,6 @@ class StokController extends Controller
         try {
             $stok = StokModel::findOrFail($id);
             return view('stok.edit_ajax', ['stok' => $stok]);
-
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return view('stok.edit_ajax')->with('error', 'Data stok tidak ditemukan');
         }
@@ -175,7 +182,6 @@ class StokController extends Controller
                     'status' => true,
                     'message' => 'Stok berhasil diperbarui'
                 ]);
-
             } catch (\Exception $e) {
                 return response()->json([
                     'status' => false,
@@ -192,7 +198,6 @@ class StokController extends Controller
         try {
             $stok = StokModel::with('barang')->findOrFail($id);
             return view('stok.confirm_ajax', ['stok' => $stok]);
-
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return view('stok.confirm_ajax')->with('error', 'Data stok tidak ditemukan');
         }
@@ -209,7 +214,6 @@ class StokController extends Controller
                     'status' => true,
                     'message' => 'Data stok berhasil dihapus'
                 ]);
-
             } catch (\Exception $e) {
                 return response()->json([
                     'status' => false,
@@ -296,6 +300,6 @@ class StokController extends Controller
         $pdf->setPaper('a4', 'landscape');
         $pdf->setOption("isRemoteEnabled", true);
 
-        return $pdf->stream('Data_Stok_'.date('YmdHis').'.pdf');
+        return $pdf->stream('Data_Stok_' . date('YmdHis') . '.pdf');
     }
 }

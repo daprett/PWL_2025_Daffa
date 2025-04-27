@@ -5,7 +5,6 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a href="{{ url('/stok/export_excel') }}" class="btn btn-primary"><i class="fa fa-file-excel"></i> Export Excel</a>
                 <button onclick="modalAction('{{ url('/stok/create_ajax') }}')" class="btn btn-success"> Tambah Data (Ajax)</button>
                 <a href="{{ url('/stok/export_pdf') }}" class="btn btn-warning"><i class="fa fa-file-pdf"></i> Export PDF</a>
             </div>
@@ -39,7 +38,7 @@
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
 
-            <table class="table table-bordered table-sm table-striped table-hover" id="table-stok">
+            <table class="table table-bordered table-sm table-striped table-hover" id="stok_id">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -71,11 +70,11 @@
 
         var tableStok;
         $(document).ready(function () {
-            tableStok = $('#table-stok').DataTable({
+            tableStok = $('#stok_id').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    "url": "{{ url('stok/stok/list') }}",
+                    "url": "{{ url('/stok/list') }}",
                     "type": "POST",
                     "data": function (d) {
                         d.filter_barang = $('.filter_barang').val();

@@ -21,7 +21,7 @@ class TransaksiController extends Controller
             'list' => ['Home', 'Penjualan']
         ];
 
-        return view('penjualan.index', [
+        return view('transaksi.index', [
             'activeMenu' => $activeMenu,
             'breadcrumb' => $breadcrumb
         ]);
@@ -81,7 +81,7 @@ class TransaksiController extends Controller
             ->select('barang_id', 'barang_nama', 'harga_jual')
             ->get();
 
-        return view('penjualan.create_ajax', ['barang' => $barang]);
+        return view('transaksi.create_ajax', ['barang' => $barang]);
     }
 
     public function store_ajax(Request $request)
